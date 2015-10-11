@@ -7,18 +7,24 @@ import (
 
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/websocket"
+	"github.com/nii236/flux-challenge-go/server/JSONLoader"
 )
+
+var darkJedis []JSONLoader.DarkJedi
+var worlds []JSONLoader.World
 
 func main() {
 	fmt.Println("Starting Flux Challenge server...")
+	worlds, darkJedis = JSONLoader.LoadJSON()
 	go websocketServer()
 	go restServer()
 	for {
-
 	}
 }
 
-func websocketServer() {
+//WebsocketServer starts a websocket server
+func restServer() {
+	fmt.Println(darkJedis)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", restHandler)
 	n := negroni.Classic()
@@ -26,7 +32,8 @@ func websocketServer() {
 	n.Run(":3000")
 }
 
-func restServer() {
+func websocketServer() {
+	fmt.Println(worlds)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", websocketHandler)
 	n := negroni.Classic()
@@ -53,9 +60,7 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	for {
-		messageType, p, err := conn.ReadMessage()
-		log.Println(messageType)
+		_, p, _ := conn.ReadMessage()
 		log.Println(string(p))
-		log.Println(err)
 	}
 }
