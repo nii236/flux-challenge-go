@@ -21,7 +21,7 @@ type DarkJedi struct {
 	Apprentice int    `json:"apprentice"`
 }
 
-//LoadJSON marshals decodes dark jedis and wolrds JSONs into structs
+//LoadJSON marshals decodes dark jedis and worlds JSONs into structs
 func LoadJSON() ([]World, []DarkJedi) {
 	worldsFile, err := os.Open("worlds.json")
 	if err != nil {

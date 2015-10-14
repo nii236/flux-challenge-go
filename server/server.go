@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/websocket"
@@ -24,16 +25,14 @@ func main() {
 
 //WebsocketServer starts a websocket server
 func restServer() {
-	fmt.Println(darkJedis)
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", restHandler)
+	mux.HandleFunc("/darkjedi", restHandler)
 	n := negroni.Classic()
 	n.UseHandler(mux)
 	n.Run(":3000")
 }
 
 func websocketServer() {
-	fmt.Println(worlds)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", websocketHandler)
 	n := negroni.Classic()
@@ -49,6 +48,17 @@ var upgrader = websocket.Upgrader{
 
 func restHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Received REST request")
+	query := r.URL.Query()
+	darkJediID, _ := strconv.Atoi(query.Get("id"))
+	for _, dj := range darkJedis {
+		if darkJediID == dj.ID {
+			fmt.Print(r.URL.Path[1:])
+			fmt.Fprint(w, dj.Name)
+			return
+		}
+	}
+	fmt.Fprint(w, "Dark Jedi not found")
+
 }
 
 func websocketHandler(w http.ResponseWriter, r *http.Request) {
