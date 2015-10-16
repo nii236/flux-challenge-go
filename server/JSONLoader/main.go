@@ -21,6 +21,21 @@ type DarkJedi struct {
 	Apprentice int    `json:"apprentice"`
 }
 
+//AugmentURL contains relational URLs for DarkJedi
+type AugmentURL struct {
+	URL string `json:"url"`
+	ID  int    `json:"id"`
+}
+
+//AugmentedDarkJedi is a DarkJedi with relational URLs
+type AugmentedDarkJedi struct {
+	ID         int        `json:"id"`
+	Name       string     `json:"name"`
+	Homeworld  World      `json:"Homeworld"`
+	Master     AugmentURL `json:"master"`
+	Apprentice AugmentURL `json:"apprentice"`
+}
+
 //LoadJSON marshals decodes dark jedis and worlds JSONs into structs
 func LoadJSON() ([]World, []DarkJedi) {
 	worldsFile, err := os.Open("worlds.json")
